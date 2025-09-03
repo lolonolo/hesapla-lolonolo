@@ -29,8 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const gpaResultArea = document.getElementById('gpa-result-area');
 
     const gradePointValues = { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0 };
+    
     const universitySystems = {
-        'auzef_acik':    { weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 50, minAverage: 35 } },
+        'auzef_acik':    { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
         'auzef_uzaktan': { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
         'anadolu_aof':   { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
         'ata_aof':       { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } }
@@ -143,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let requiredFinal = (targetScore - (vize * system.weights.vize)) / system.weights.final;
         const finalMinScore = system.rules.minFinal;
-
         let finalResult = Math.max(requiredFinal, finalMinScore);
         
         if (finalResult > 100) {
@@ -158,8 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calculatePassBtn.addEventListener('click', calculateRequiredFinal);
     
-    // Sayfa ilk yüklendiğinde GANO için 7 satır ekle
-    for (let i = 0; i < 7; i++) {
+    // Sayfa ilk yüklendiğinde GANO için 5 ders satırı ekle (GÜNCELLENDİ)
+    for (let i = 0; i < 5; i++) {
         addCourseRow();
     }
 });
