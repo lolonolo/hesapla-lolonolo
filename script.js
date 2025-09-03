@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gradePointValues = { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0 };
     
+    // GÜNCELLENMİŞ SİSTEMLER
     const universitySystems = {
         'auzef_acik':    { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
         'auzef_uzaktan': { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
@@ -158,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     calculatePassBtn.addEventListener('click', calculateRequiredFinal);
     
-    // Sayfa ilk yüklendiğinde GANO için 5 ders satırı ekle (GÜNCELLENDİ)
+    // Sayfa ilk yüklendiğinde GANO için 5 ders satırı ekle
     for (let i = 0; i < 5; i++) {
         addCourseRow();
     }
