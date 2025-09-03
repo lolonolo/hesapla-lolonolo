@@ -2,14 +2,15 @@
 
 :root {
     --primary-color: #007bff;
+    --secondary-color: #6c757d;
     --card-bg: #ffffff;
     --body-bg: #f4f7f9;
     --text-color: #333;
     --light-text: #666;
-    --border-color: #e0e0e0;
+    --border-color: #dee2e6;
     --success-bg: #e7f5ec;
-    --success-border: #b8dfc9;
     --success-text: #0f5132;
+    --danger-color: #dc3545;
 }
 
 * {
@@ -22,88 +23,154 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--body-bg);
     color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
     padding: 20px;
-    min-height: 100vh;
 }
 
-.card {
+.calculator-container {
     background-color: var(--card-bg);
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
+    margin: 20px auto;
 }
 
-.card-header {
-    padding: 24px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.card-header h1 {
-    font-size: 22px;
-    margin-bottom: 8px;
-}
-
-.card-header p {
-    font-size: 15px;
-    color: var(--light-text);
-}
-
-.card-body {
-    padding: 24px;
+.tabs {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    background-color: #f8f9fa;
 }
 
-.options {
-    display: flex;
-    gap: 16px;
+.tab-btn {
+    flex-grow: 1;
+    padding: 15px 10px;
     font-size: 14px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: var(--secondary-color);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
 }
 
-.input-group label {
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.calculator-content {
+    padding: 24px;
+}
+
+.input-section {
+    margin-bottom: 24px;
+}
+
+.input-section label {
     display: block;
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 14px;
 }
 
-.input-group input[type="number"] {
+select, input {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 16px;
     font-family: 'Poppins', sans-serif;
+    background-color: #fff;
 }
+
+.courses-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.courses-table th, .courses-table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.courses-table th {
+    font-size: 13px;
+    color: var(--light-text);
+    text-transform: uppercase;
+}
+
+.courses-table td:last-child {
+    text-align: center;
+}
+
+.delete-row-btn {
+    background-color: #fbebee;
+    color: var(--danger-color);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.delete-row-btn:hover{
+    background-color: #f1c1c5;
+}
+
 
 button {
     width: 100%;
     padding: 14px;
-    background-color: var(--primary-color);
-    color: white;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.2s;
+    margin-top: 10px;
 }
 
-button:hover {
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+.primary-btn:hover {
     background-color: #0056b3;
 }
 
-.card-footer {
-    padding: 20px 24px;
+.secondary-btn {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+.secondary-btn:hover {
+    background-color: #e9ecef;
+}
+
+
+.result-area {
+    margin-top: 24px;
+    padding: 20px;
     background-color: var(--success-bg);
-    border-top: 1px solid var(--success-border);
-    display: none; /* JavaScript ile gösterilecek */
+    border-radius: 8px;
     text-align: center;
+    font-size: 18px;
+    font-weight: 600;
     color: var(--success-text);
+    display: none; /* JavaScript ile gösterilecek */
+}
+
+/* Mobil için düzenlemeler */
+@media (max-width: 480px) {
+    .tabs {
+        flex-direction: column;
+    }
+    .courses-table th, .courses-table td {
+        padding: 8px;
+    }
 }
