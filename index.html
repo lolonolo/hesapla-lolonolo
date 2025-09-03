@@ -11,123 +11,96 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
-
-     <script>
-        window.ezstandalone = window.ezstandalone || {};
-        ezstandalone.cmd = ezstandalone.cmd || [];
-    </script>
-   
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E3VBQV8L46"></script>
     <script>
-        function signalGooglefcPresent() {
-            if (!window.frames['googlefcPresent']) {
-                if (document.body) {
-                    const iframe = document.createElement('iframe');
-                    iframe.name = 'googlefcPresent';
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-                } else {
-                    setTimeout(signalGooglefcPresent, 0);
-                }
-            }
-        }
-        signalGooglefcPresent();
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-E3VBQV8L46');
     </script>
     </head>
 <body>
 
-    <div class="calculator-container">
-        <nav class="tabs">
-            <button class="tab-btn active" data-tab="gano-content">GANO (AGNO) HESAPLAYICI</button>
-            <button class="tab-btn" data-tab="pass-content">DERS GEÇME HESAPLAYICI</button>
+    <button class="hamburger-btn" id="hamburger-btn">☰</button>
+
+    <div class="main-container">
+        <div class="calculator-container">
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="gano-content">GANO (AGNO) HESAPLAYICI</button>
+                <button class="tab-btn" data-tab="pass-content">DERS GEÇME HESAPLAYICI</button>
+            </nav>
+
+            <div id="gano-content" class="calculator-content active-content">
+                <div class="input-section">
+                    <label for="system-select">Okul / Sistem Seçin</label>
+                    <select id="system-select">
+                        <option value="auzef_acik">AUZEF - Açıköğretim (%30 Vize - %70 Final)</option>
+                        <option value="auzef_uzaktan">AUZEF - Uzaktan Öğretim (%40 Vize - %60 Final)</option>
+                        <option value="anadolu_aof">Anadolu AÖF (%30 Vize - %70 Final)</option>
+                        <option value="ata_aof">ATA AÖF (%30 Vize - %70 Final)</option>
+                    </select>
+                </div>
+                <div class="table-wrapper">
+                    <table class="courses-table">
+                        <thead>
+                            <tr>
+                                <th>Kredi (AKTS)</th>
+                                <th>Vize Notu</th>
+                                <th>Final/Büt Notu</th>
+                                <th>Başarı Notu</th>
+                                <th>Harf Notu</th>
+                                <th>Durum</th>
+                                <th>Sil</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courses-tbody">
+                            </tbody>
+                    </table>
+                </div>
+                <button id="add-course-btn" class="secondary-btn">+ Yeni Ders Ekle</button>
+                <button id="calculate-gpa-btn" class="primary-btn">ORTALAMAYI HESAPLA</button>
+                <div id="gpa-result-area" class="result-area"></div>
+            </div>
+
+            <div id="pass-content" class="calculator-content" style="display: none;">
+                <p class="content-description">Vize notunuzu ve dersten almayı hedeflediğiniz harf notunu seçerek Final veya Bütünleme'den en az kaç almanız gerektiğini hesaplayın.</p>
+                <div class="input-section">
+                    <label for="pass-vize-input">Vize Notu</label>
+                    <input type="number" id="pass-vize-input" placeholder="Vize notunuzu girin">
+                </div>
+                <div class="input-section">
+                    <label for="target-grade-select">Hedeflenen Harf Notu</label>
+                    <select id="target-grade-select">
+                        <option value="35">Sadece Geçmek (DD - En Düşük)</option>
+                        <option value="53">DC - Şartlı Geçmek</option>
+                        <option value="60">CC - Orta</option>
+                        <option value="67">CB</option>
+                        <option value="74">BB - İyi</option>
+                        <option value="81">BA</option>
+                        <option value="88">AA - Mükemmel</option>
+                    </select>
+                </div>
+                <button id="calculate-pass-btn" class="primary-btn">GEREKEN NOTU HESAPLA</button>
+                <div id="pass-result-area" class="result-area"></div>
+            </div>
+        </div>
+
+        <nav class="side-menu" id="side-menu">
+            <h3>Lolonolo Kaynakları</h3>
+            <ul>
+                <li><a href="https://lolonolo.com" target="_blank">Tüm Çıkmış Sınav Soruları</a></li>
+                <li><a href="https://www.shopier.com/lolonolo" target="_blank">Premium Üyelik</a></li>
+                <li><a href="https://openvideo.lolonolo.com/" target="_blank">Youtube Soru Videoları</a></li>
+                <li><a href="https://www.instagram.com/lolonolo_com" target="_blank">Destek (Instagram)</a></li>
+                <li><a href="mailto:lolonolo@lolonolo.com">İletişim (E-posta)</a></li>
+            </ul>
         </nav>
-
-        <div id="gano-content" class="calculator-content active-content">
-            <div class="input-section">
-                <label for="system-select">Okul / Sistem Seçin</label>
-                <select id="system-select">
-                   <option value="auzef_acik">AUZEF - Açıköğretim (%30 Vize - %70 Final)</option>
-                    <option value="auzef_uzaktan">AUZEF - Uzaktan Öğretim (%40 Vize - %60 Final)</option>
-                    <option value="anadolu_aof">Anadolu AÖF (%30 Vize - %70 Final)</option>
-                    <option value="ata_aof">ATA AÖF (%30 Vize - %70 Final)</option>
-                </select>
-            </div>
-            <div class="table-wrapper">
-                <table class="courses-table">
-                    <thead>
-                        <tr>
-                            <th>Kredi (AKTS)</th>
-                            <th>Vize Notu</th>
-                            <th>Final/Büt Notu</th>
-                            <th>Başarı Notu</th>
-                            <th>Harf Notu</th>
-                            <th>Durum</th>
-                            <th>Sil</th>
-                        </tr>
-                    </thead>
-                    <tbody id="courses-tbody"></tbody>
-                </table>
-            </div>
-            <button id="add-course-btn" class="secondary-btn">+ Yeni Ders Ekle</button>
-            <button id="calculate-gpa-btn" class="primary-btn">ORTALAMAYI HESAPLA</button>
-            <div id="gpa-result-area" class="result-area"></div>
-        </div>
-
-        <div id="pass-content" class="calculator-content" style="display: none;">
-            <p class="content-description">Vize notunuzu ve dersten almayı hedeflediğiniz harf notunu seçerek Final veya Bütünleme'den en az kaç almanız gerektiğini hesaplayın.</p>
-            <div class="input-section">
-                <label for="pass-vize-input">Vize Notu</label>
-                <input type="number" id="pass-vize-input" placeholder="Vize notunuzu girin">
-            </div>
-            <div class="input-section">
-                <label for="target-grade-select">Hedeflenen Harf Notu</label>
-                <select id="target-grade-select">
-                    <option value="35">Sadece Geçmek (DD - En Düşük)</option>
-                    <option value="53">DC - Şartlı Geçmek</option>
-                    <option value="60">CC - Orta</option>
-                    <option value="67">CB</option>
-                    <option value="74">BB - İyi</option>
-                    <option value="81">BA</option>
-                    <option value="88">AA - Mükemmel</option>
-                </select>
-            </div>
-            <button id="calculate-pass-btn" class="primary-btn">GEREKEN NOTU HESAPLA</button>
-            <div id="pass-result-area" class="result-area"></div>
-        </div>
-
     </div>
+
+    <div id="bottom-ad-placeholder">
+        </div>
     
     <script src="script.js"></script>
-     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if (typeof ezstandalone !== 'undefined') {
-            ezstandalone.cmd.push(function() {
-                ezstandalone.enable();
-                ezstandalone.display();
-            });
-        }
-
-        setTimeout(function() {
-            var fcScript = document.createElement('script');
-            fcScript.src = "https://fundingchoicesmessages.google.com/i/pub-6517205438926212?ers=1";
-            fcScript.async = true;
-            document.head.appendChild(fcScript);
-
-            function signalGooglefcPresent() {
-                if (!window.frames['googlefcPresent']) {
-                    if (document.body) {
-                        const iframe = document.createElement('iframe');
-                        iframe.name = 'googlefcPresent';
-                        iframe.style.display = 'none';
-                        document.body.appendChild(iframe);
-                    } else {
-                        setTimeout(signalGooglefcPresent, 0);
-                    }
-                }
-            }
-            signalGooglefcPresent();
-        }, 5000);
-    });
-    </script>
     </body>
 </html>
