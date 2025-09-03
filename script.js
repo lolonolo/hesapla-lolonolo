@@ -30,10 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gradePointValues = { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0 };
     
-    // GÜNCELLENMİŞ SİSTEMLER
+    // GÜNCELLENMİŞ SİSTEMLER (Uzaktan %40/60 yapıldı)
     const universitySystems = {
         'auzef_acik':    { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
-        'auzef_uzaktan': { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
+        'auzef_uzaktan': { weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 50, minAverage: 35 } },
         'anadolu_aof':   { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
         'ata_aof':       { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } }
     };
