@@ -2,23 +2,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- SEKME DEĞİŞTİRME MANTIĞI ---
     const tabs = document.querySelectorAll('.tab-btn');
     const contents = document.querySelectorAll('.calculator-content');
-    
+
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(item => item.classList.remove('active'));
             tab.classList.add('active');
-            
-            const target = document.getElementById(tab.dataset.tab);
-            
+
+            const targetId = tab.dataset.tab;
+            const targetContent = document.getElementById(targetId);
+
             contents.forEach(content => {
                 content.style.display = 'none';
             });
-            target.style.display = 'block';
+
+            if (targetContent) {
+                targetContent.style.display = 'block';
+            }
         });
     });
 
     // --- GANO HESAPLAYICI KODLARI ---
-    const systemSelect = document.getElementById('system-select');
+    const ganoSystemSelect = document.getElementById('system-select');
     const coursesTbody = document.getElementById('courses-tbody');
     const addCourseBtn = document.getElementById('add-course-btn');
     const calculateGpaBtn = document.getElementById('calculate-gpa-btn');
@@ -38,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (score >= 60) return 'CC'; if (score >= 53) return 'DC';
         if (score >= 46) return 'DD'; return 'FF';
     };
-    
+
     const getPassStatus = (finalGrade, successGrade, letterGrade, rules) => {
         if (finalGrade < rules.minFinal || successGrade < rules.minAverage) {
             return { text: 'Kaldı', className: 'status-failed' };
@@ -63,64 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
         coursesTbody.appendChild(row);
     };
 
-    const calculateGpa = () => { /* ... GANO hesaplama kodumuzun tamamı burada ... */ };
-    coursesTbody.addEventListener('click', (e) => { /* ... Silme kodumuz burada ... */ });
-    addCourseBtn.addEventListener('click', addCourseRow);
-    calculateGpaBtn.addEventListener('click', calculateAndDisplayResults);
-
-    // --- DERS GEÇME HESAPLAYICI KODLARI ---
-    const passVizeInput = document.getElementById('pass-vize-input');
-    const targetGradeSelect = document.getElementById('target-grade-select');
-    const calculatePassBtn = document.getElementById('calculate-pass-btn');
-    const passResultArea = document.getElementById('pass-result-area');
-
-    const calculateRequiredFinal = () => {
-        const selectedSystemKey = systemSelect.value;
-        const system = universitySystems[selectedSystemKey];
-        const vize = parseFloat(passVizeInput.value);
-        const targetScore = parseFloat(targetGradeSelect.value);
-
-        if (isNaN(vize)) {
-            passResultArea.innerHTML = 'Lütfen geçerli bir Vize notu girin.';
-            passResultArea.className = 'result-area status-failed';
-            passResultArea.style.display = 'block';
-            return;
-        }
-
-        // Formül: (HedefNot - (Vize * VizeAğırlığı)) / FinalAğırlığı = GerekenFinalNotu
-        let requiredFinal = (targetScore - (vize * system.weights.vize)) / system.weights.final;
-
-        // Kural: Finalden en az 50 alınmalı.
-        const finalMinScore = system.rules.minFinal;
-        if (requiredFinal < finalMinScore) {
-            // Eğer hesaplanan not 50'den düşükse ama 50 alınınca ortalama hala hedefi tutuyorsa, 50 yeterlidir.
-            const averageWith50 = (vize * system.weights.vize) + (finalMinScore * system.weights.final);
-            if (averageWith50 >= targetScore) {
-                 requiredFinal = finalMinScore;
-            }
-        }
-        
-        if (requiredFinal > 100) {
-            passResultArea.innerHTML = `Bu vize notuyla hedefinize ulaşmak için Final'den <strong>100'den yüksek</strong> almanız gerekiyor. Maalesef mümkün değil.`;
-            passResultArea.className = 'result-area status-failed';
-        } else if (requiredFinal < 0) {
-            passResultArea.innerHTML = `Bu vize notuyla hedefinize ulaşmak için Final'den <strong>${finalMinScore}</strong> almanız yeterlidir.`;
-            passResultArea.className = 'result-area status-passed';
-        } else {
-            passResultArea.innerHTML = `Hedefinize ulaşmak için Final'den almanız gereken minimum not: <strong>${Math.ceil(requiredFinal)}</strong>`;
-            passResultArea.className = 'result-area status-passed';
-        }
-        passResultArea.style.display = 'block';
-    };
-
-    calculatePassBtn.addEventListener('click', calculateRequiredFinal);
-    
-    // Sayfa ilk yüklendiğinde GANO için 7 satır ekle
-    for (let i = 0; i < 7; i++) { addCourseRow(); }
-    
-    // GANO hesaplama fonksiyonunun içeriğini buraya taşıyalım
-    function calculateAndDisplayResults() {
-        const selectedSystemKey = systemSelect.value;
+    const calculateAndDisplayGpaResults = () => {
+        const selectedSystemKey = ganoSystemSelect.value;
         const selectedSystem = universitySystems[selectedSystemKey];
         const rows = coursesTbody.querySelectorAll('tr');
         let totalCredits = 0, totalWeightedPoints = 0;
@@ -139,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const successGrade = (vize * selectedSystem.weights.vize) + (final * selectedSystem.weights.final);
                 const letterGrade = getLetterGrade(successGrade);
                 const status = getPassStatus(final, successGrade, letterGrade, selectedSystem.rules);
-
                 successGradeCell.textContent = successGrade.toFixed(2);
                 letterGradeCell.textContent = letterGrade;
                 statusCell.textContent = status.text;
@@ -157,4 +104,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (totalCredits === 0) {
             gpaResultArea.innerHTML = 'Lütfen en az bir ders için geçerli bilgiler girin.';
-            gpaResultA
+            gpaResultArea.style.display = 'block';
+            gpaResultArea.className = 'result-area status-failed';
+        } else {
+            const gpa = totalWeightedPoints / totalCredits;
+            gpaResultArea.innerHTML = `<strong>Dönem Ortalamanız (GANO / AGNO):</strong> ${gpa.toFixed(2)}`;
+            gpaResultArea.style.display = 'block';
+            gpaResultArea.className = 'result-area status-passed';
+        }
+    };
+
+    addCourseBtn.addEventListener('click', addCourseRow);
+    calculateGpaBtn.addEventListener('click', calculateAndDisplayGpaResults);
+    coursesTbody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-row-btn')) {
+            e.target.closest('tr').remove();
+        }
+    });
+
+    // --- DERS GEÇME HESAPLAYICI KODLARI ---
+    const passVizeInput = document.getElementById('pass-vize-input');
+    const targetGradeSelect = document.getElementById('target-grade-select');
+    const calculatePassBtn = document.getElementById('calculate-pass-btn');
+    const passResultArea = document.getElementById('pass-result-area');
+
+    const calculateRequiredFinal = () => {
+        const selectedSystemKey = ganoSystemSelect.value;
+        const system = universitySystems[selectedSystemKey];
+        const vize = parseFloat(passVizeInput.value);
+        const targetScore = parseFloat(targetGradeSelect.value);
+
+        if (isNaN(vize) || vize < 0 || vize > 100) {
+            passResultArea.innerHTML = 'Lütfen 0-100 arasında geçerli bir Vize notu girin.';
+            passResultArea.className = 'result-area status-failed';
+            passResultArea.style.display = 'block';
+            return;
+        }
+
+        let requiredFinal = (targetScore - (vize * system.weights.vize)) / system.weights.final;
+        const finalMinScore = system.rules.minFinal;
+
+        let finalResult = Math.max(requiredFinal, finalMinScore);
+        
+        if (finalResult > 100) {
+            passResultArea.innerHTML = `Bu vize notuyla hedefinize ulaşmak için Final'den <strong>100'den yüksek</strong> almanız gerekiyor. Maalesef mümkün değil.`;
+            passResultArea.className = 'result-area status-failed';
+        } else {
+            passResultArea.innerHTML = `Hedefinize ulaşmak için Final'den almanız gereken minimum not: <strong>${Math.ceil(finalResult)}</strong>`;
+            passResultArea.className = 'result-area status-passed';
+        }
+        passResultArea.style.display = 'block';
+    };
+
+    calculatePassBtn.addEventListener('click', calculateRequiredFinal);
+    
+    // Sayfa ilk yüklendiğinde GANO için 7 satır ekle
+    for (let i = 0; i < 7; i++) {
+        addCourseRow();
+    }
+});
