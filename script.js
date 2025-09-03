@@ -8,19 +8,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- TAB SWITCHING LOGIC ---
     const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.calculator-content');
+    const ganoContent = document.getElementById('gano-content');
+    const passContent = document.getElementById('pass-content');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             tabs.forEach(item => item.classList.remove('active'));
             tab.classList.add('active');
             const targetId = tab.dataset.tab;
-            contents.forEach(content => {
-                if (content.id === targetId) {
-                    content.style.display = 'block';
-                } else {
-                    content.style.display = 'none';
-                }
-            });
+            if (targetId === 'gano-content') {
+                ganoContent.style.display = 'block';
+                passContent.style.display = 'none';
+            } else {
+                ganoContent.style.display = 'none';
+                passContent.style.display = 'block';
+            }
         });
     });
 
@@ -32,25 +33,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const gpaResultArea = document.getElementById('gpa-result-area');
     const gradePointValues = { 'AA': 4.0, 'AB': 3.7, 'BA': 3.3, 'BB': 3.0, 'BC': 2.7, 'CB': 2.3, 'CC': 2.0, 'CD': 1.7, 'DC': 1.3, 'DD': 1.0, 'FF': 0.0 };
     const universitySystems = {
-        'auzef_acik':    { name: "AUZEF Açıköğretim", weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 35 }, gradeTable: 'auzef' },
-        'auzef_uzaktan': { name: "AUZEF Uzaktan Öğretim", weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 0, minAverage: 35 }, gradeTable: 'auzef' },
-        'anadolu_aof':   { name: "Anadolu AÖF", weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 33 }, gradeTable: 'anadolu' },
-        'ata_aof':       { name: "ATA AÖF", weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 35 }, gradeTable: 'ata' }
+        'auzef_acik':    { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 35 }, gradeTable: 'auzef' },
+        'auzef_uzaktan': { weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 0, minAverage: 35 }, gradeTable: 'auzef' },
+        'anadolu_aof':   { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 33 }, gradeTable: 'anadolu' },
+        'ata_aof':       { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 35 }, gradeTable: 'ata' }
     };
 
     const getLetterGradeBySystem = (score, system) => {
         switch (system) {
             case 'anadolu':
-                if (score >= 84) return 'AA'; if (score >= 77) return 'AB'; if (score >= 71) return 'BA'; if (score >= 66) return 'BB';
-                if (score >= 61) return 'BC'; if (score >= 56) return 'CB'; if (score >= 50) return 'CC'; if (score >= 46) return 'CD';
-                if (score >= 40) return 'DC'; if (score >= 33) return 'DD'; return 'FF';
+                if (score >= 84) return 'AA'; if (score >= 77) return 'AB'; if (score >= 71) return 'BA';
+                if (score >= 66) return 'BB'; if (score >= 61) return 'BC'; if (score >= 56) return 'CB';
+                if (score >= 50) return 'CC'; if (score >= 46) return 'CD'; if (score >= 40) return 'DC';
+                if (score >= 33) return 'DD'; return 'FF';
             case 'ata':
-                if (score >= 88) return 'AA'; if (score >= 81) return 'BA'; if (score >= 74) return 'BB'; if (score >= 67) return 'CB';
-                if (score >= 60) return 'CC'; if (score >= 50) return 'DC'; if (score >= 35) return 'DD'; return 'FF';
             case 'auzef':
-                if (score >= 88) return 'AA'; if (score >= 81) return 'BA'; if (score >= 74) return 'BB'; if (score >= 67) return 'CB';
-                if (score >= 60) return 'CC'; if (score >= 53) return 'DC'; if (score >= 35) return 'DD'; return 'FF';
-            default: return 'FF';
+            default:
+                if (score >= 88) return 'AA'; if (score >= 81) return 'BA'; if (score >= 74) return 'BB';
+                if (score >= 67) return 'CB'; if (score >= 60) return 'CC'; if (score >= 53) return 'DC';
+                if (score >= 35) return 'DD'; return 'FF';
         }
     };
     
