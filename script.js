@@ -6,12 +6,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateGpaBtn = document.getElementById('calculate-gpa-btn');
     const gpaResultArea = document.getElementById('gpa-result-area');
 
-    // Harf notlarının 4'lük sistemdeki karşılıkları
+    // Harf notlarının 4'lük sistemdeki karşılıkları (FD Kaldırıldı)
     const gradePointValues = {
-        'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FD': 0.5, 'FF': 0.0
+        'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0
     };
 
-    // Başarı notuna göre harf notunu bulan fonksiyon
+    // Her okul/sistem için özel kurallar ve ağırlıklar
+    // İleride her okulun kendi kuralını buraya kolayca ekleyebiliriz
+    const universitySystems = {
+        'auzef_acik':    { weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 50, minAverage: 35 } },
+        'auzef_uzaktan': { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
+        'anadolu_aof':   { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } }, // Varsayılan kurallar
+        'ata_aof':       { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } }  // Varsayılan kurallar
+    };
+
+    // Başarı notuna göre harf notunu bulan fonksiyon (FD Kaldırıldı)
     const getLetterGrade = (score) => {
         if (score >= 88) return 'AA';
         if (score >= 81) return 'BA';
@@ -20,13 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (score >= 60) return 'CC';
         if (score >= 53) return 'DC';
         if (score >= 46) return 'DD';
-        if (score >= 39) return 'FD';
         return 'FF';
     };
     
-    // Geçti/Kaldı/Şartlı Geçti durumunu ve rengini belirleyen fonksiyon (GÜNCELLENDİ)
-    const getPassStatus = (finalGrade, successGrade, letterGrade) => {
-        if (finalGrade < 50 || successGrade < 35) {
+    // Geçti/Kaldı/Şartlı Geçti durumunu belirleyen fonksiyon
+    const getPassStatus = (finalGrade, successGrade, letterGrade, rules) => {
+        if (finalGrade < rules.minFinal || successGrade < rules.minAverage) {
             return { text: 'Kaldı', className: 'status-failed' };
         }
         if (letterGrade === 'DC' || letterGrade === 'DD') {
@@ -35,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return { text: 'Geçti', className: 'status-passed' };
     };
 
-    // Yeni bir ders satırı ekleyen fonksiyon (GÜNCELLENDİ)
+    // Yeni bir ders satırı ekleyen fonksiyon
     const addCourseRow = () => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -50,10 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
         coursesTbody.appendChild(row);
     };
 
-    // Hesaplama ve GANO'yu gösterme ana fonksiyonu (GÜNCELLENDİ)
+    // Hesaplama ve GANO'yu gösterme ana fonksiyonu
     const calculateAndDisplayResults = () => {
-        const selectedSystem = systemSelect.value;
-        const weights = (selectedSystem === 'uzaktan') ? { vize: 0.3, final: 0.7 } : { vize: 0.4, final: 0.6 };
+        const selectedSystemKey = systemSelect.value;
+        const selectedSystem = universitySystems[selectedSystemKey];
         
         const rows = coursesTbody.querySelectorAll('tr');
         let totalCredits = 0;
@@ -68,17 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const letterGradeCell = row.querySelector('.letter-grade');
             const statusCell = row.querySelector('.status');
             
-            statusCell.className = 'result-cell status'; // Stilleri sıfırla
+            statusCell.className = 'result-cell status';
 
             const credit = parseFloat(creditInput.value);
             const vize = parseFloat(vizeInput.value);
             const final = parseFloat(finalInput.value);
 
             if (!isNaN(credit) && credit > 0 && !isNaN(vize) && !isNaN(final)) {
-                const successGrade = (vize * weights.vize) + (final * weights.final);
+                const successGrade = (vize * selectedSystem.weights.vize) + (final * selectedSystem.weights.final);
                 const letterGrade = getLetterGrade(successGrade);
-                // getPassStatus'a letterGrade de gönderiliyor
-                const status = getPassStatus(final, successGrade, letterGrade);
+                const status = getPassStatus(final, successGrade, letterGrade, selectedSystem.rules);
 
                 successGradeCell.textContent = successGrade.toFixed(2);
                 letterGradeCell.textContent = letterGrade;
@@ -86,8 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusCell.classList.add(status.className);
 
                 const gradePoint = gradePointValues[letterGrade];
-                totalCredits += credit;
-                totalWeightedPoints += credit * gradePoint;
+                if (gradePoint !== undefined) {
+                    totalCredits += credit;
+                    totalWeightedPoints += credit * gradePoint;
+                }
             } else {
                 successGradeCell.textContent = '-';
                 letterGradeCell.textContent = '-';
