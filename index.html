@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GANO Hesaplama Aracı - Lolonolo</title>
+    <title>GANO (AGNO) Hesaplama Aracı - Lolonolo</title>
     
     <link rel="icon" type="image/png" href="https://lolonolo.com/wp-content/uploads/2025/04/lolonolo-favicon.png">
     <link rel="apple-touch-icon" href="https://lolonolo.com/wp-content/uploads/2025/04/lolonolo-favicon.png">
@@ -32,35 +32,38 @@
 
     <div class="calculator-container">
         <nav class="tabs">
-            <button class="tab-btn active" data-tab="gano">GANO HESAPLAYICI</button>
+            <button class="tab-btn active" data-tab="gano">GANO (AGNO) HESAPLAYICI</button>
             <button class="tab-btn" data-tab="pass">Ders Geçme Hesaplayıcı</button>
         </nav>
 
         <div class="calculator-content">
             <div class="input-section">
-                <label for="university-select">Üniversite Sistemi Seçin</label>
-                <select id="university-select">
-                    <option value="standart">Genel / Standart Sistem</option>
-                    <option value="auf">Anadolu Üniversitesi (AÖF)</option>
-                    <option value="auzef">İstanbul Üniversitesi (AUZEF)</option>
-                    <option value="ata_auf">Atatürk Üniversitesi (ATA-AÖF)</option>
+                <label for="system-select">Sistem Seçin</label>
+                <select id="system-select">
+                    <option value="acikogretim">Açıköğretim (%40 Vize - %60 Final)</option>
+                    <option value="uzaktan">Uzaktan Öğretim (%30 Vize - %70 Final)</option>
                 </select>
             </div>
 
-            <table class="courses-table">
-                <thead>
-                    <tr>
-                        <th>Ders Kredisi</th>
-                        <th>Harf Notu</th>
-                        <th>Kaldır</th>
-                    </tr>
-                </thead>
-                <tbody id="courses-tbody">
-                    </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table class="courses-table">
+                    <thead>
+                        <tr>
+                            <th>Kredi (AKTS)</th>
+                            <th>Vize Notu</th>
+                            <th>Final/Büt Notu</th>
+                            <th>Başarı Notu</th>
+                            <th>Harf Notu</th>
+                            <th>Durum</th>
+                            <th>Sil</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses-tbody">
+                        </tbody>
+                </table>
+            </div>
             
             <button id="add-course-btn" class="secondary-btn">+ Yeni Ders Ekle</button>
-            
             <button id="calculate-gpa-btn" class="primary-btn">ORTALAMAYI HESAPLA</button>
 
             <div id="gpa-result-area" class="result-area">
@@ -69,17 +72,5 @@
     </div>
     
     <script src="script.js"></script>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if (typeof ezstandalone !== 'undefined') {
-            ezstandalone.cmd.push(function() {
-                ezstandalone.enable();
-                ezstandalone.display();
-            });
-        }
-    });
-    </script>
-
-</body>
+    </body>
 </html>
