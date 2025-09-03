@@ -1,114 +1,125 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+document.addEventListener('DOMContentLoaded', () => {
+    // HTML elementlerini seçiyoruz
+    const systemSelect = document.getElementById('system-select');
+    const coursesTbody = document.getElementById('courses-tbody');
+    const addCourseBtn = document.getElementById('add-course-btn');
+    const calculateGpaBtn = document.getElementById('calculate-gpa-btn');
+    const gpaResultArea = document.getElementById('gpa-result-area');
 
-:root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --card-bg: #ffffff;
-    --body-bg: #f4f7f9;
-    --text-color: #333;
-    --light-text: #6c757d;
-    --border-color: #dee2e6;
-    --passed-bg: #e7f5ec;
-    --passed-text: #0f5132;
-    --failed-bg: #fbebee;
-    --failed-text: #b02a37;
-    --danger-color: #dc3545;
-}
+    // Harf notlarının 4'lük sistemdeki karşılıkları
+    const gradePointValues = {
+        'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FD': 0.5, 'FF': 0.0
+    };
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+    // Başarı notuna göre harf notunu bulan fonksiyon (AUZEF tablosuna göre)
+    const getLetterGrade = (score) => {
+        if (score >= 88) return 'AA';
+        if (score >= 81) return 'BA';
+        if (score >= 74) return 'BB';
+        if (score >= 67) return 'CB';
+        if (score >= 60) return 'CC';
+        if (score >= 53) return 'DC';
+        if (score >= 46) return 'DD';
+        if (score >= 39) return 'FD';
+        return 'FF';
+    };
+    
+    // Geçti/Kaldı durumunu ve rengini belirleyen fonksiyon
+    const getPassStatus = (finalGrade, successGrade) => {
+        if (finalGrade >= 50 && successGrade >= 35) {
+            return { text: 'Geçti', className: 'status-passed' };
+        }
+        return { text: 'Kaldı', className: 'status-failed' };
+    };
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--body-bg);
-    color: var(--text-color);
-    padding: 10px;
-}
+    // Yeni bir ders satırı ekleyen fonksiyon
+    const addCourseRow = () => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="number" class="credit-input" placeholder="3" min="1"></td>
+            <td><input type="number" class="vize-input" placeholder="50" min="0" max="100"></td>
+            <td><input type="number" class="final-input" placeholder="70" min="0" max="100"></td>
+            <td class="result-cell success-grade">-</td>
+            <td class="result-cell letter-grade">-</td>
+            <td class="result-cell status">-</td>
+            <td><button class="delete-row-btn">X</button></td>
+        `;
+        coursesTbody.appendChild(row);
+    };
 
-.calculator-container {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 900px;
-    margin: 20px auto;
-}
+    // Hesaplama ve GANO'yu gösterme ana fonksiyonu
+    const calculateAndDisplayResults = () => {
+        const selectedSystem = systemSelect.value;
+        const weights = (selectedSystem === 'uzaktan') ? { vize: 0.3, final: 0.7 } : { vize: 0.4, final: 0.6 };
+        
+        const rows = coursesTbody.querySelectorAll('tr');
+        let totalCredits = 0;
+        let totalWeightedPoints = 0;
 
-.tabs { display: flex; background-color: #f8f9fa; }
+        rows.forEach(row => {
+            const creditInput = row.querySelector('.credit-input');
+            const vizeInput = row.querySelector('.vize-input');
+            const finalInput = row.querySelector('.final-input');
 
-.tab-btn {
-    flex-grow: 1; padding: 15px 10px; font-size: 14px;
-    font-weight: 600; cursor: pointer; border: none;
-    background-color: transparent; color: var(--secondary-color);
-    border-bottom: 3px solid transparent; transition: all 0.2s;
-}
+            // Sonuç hücrelerini seç
+            const successGradeCell = row.querySelector('.success-grade');
+            const letterGradeCell = row.querySelector('.letter-grade');
+            const statusCell = row.querySelector('.status');
+            
+            // Hücreleri temizle
+            successGradeCell.textContent = '-';
+            letterGradeCell.textContent = '-';
+            statusCell.textContent = '-';
+            statusCell.className = 'result-cell status';
 
-.tab-btn.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+            const credit = parseFloat(creditInput.value);
+            const vize = parseFloat(vizeInput.value);
+            const final = parseFloat(finalInput.value);
 
-.calculator-content { padding: 24px; }
+            if (!isNaN(credit) && credit > 0 && !isNaN(vize) && !isNaN(final)) {
+                const successGrade = (vize * weights.vize) + (final * weights.final);
+                const letterGrade = getLetterGrade(successGrade);
+                const status = getPassStatus(final, successGrade);
 
-.input-section { margin-bottom: 24px; }
+                successGradeCell.textContent = successGrade.toFixed(2);
+                letterGradeCell.textContent = letterGrade;
+                statusCell.textContent = status.text;
+                statusCell.classList.add(status.className);
 
-.input-section label {
-    display: block; font-weight: 600;
-    margin-bottom: 8px; font-size: 14px;
-}
+                // GANO hesabına sadece "Geçti" durumundaki dersleri dahil etme kuralı
+                // FF notu GANO'yu 0 ile çarparak etkiler
+                const gradePoint = gradePointValues[letterGrade];
+                totalCredits += credit;
+                totalWeightedPoints += credit * gradePoint;
+            }
+        });
 
-select, input {
-    width: 100%; padding: 10px; border: 1px solid var(--border-color);
-    border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;
-    background-color: #fff;
-}
+        if (totalCredits === 0) {
+            gpaResultArea.innerHTML = 'Lütfen en az bir ders için geçerli bilgiler girin.';
+            gpaResultArea.style.display = 'block';
+            gpaResultArea.className = 'result-area status-failed';
+            return;
+        }
 
-.table-wrapper { overflow-x: auto; }
+        const gpa = totalWeightedPoints / totalCredits;
+        gpaResultArea.innerHTML = `<strong>Dönem Ortalamanız (GANO / AGNO):</strong> ${gpa.toFixed(2)}`;
+        gpaResultArea.style.display = 'block';
+        gpaResultArea.className = 'result-area status-passed';
+    };
 
-.courses-table {
-    width: 100%; border-collapse: collapse; margin-bottom: 20px;
-}
 
-.courses-table th, .courses-table td {
-    text-align: center; padding: 12px 8px;
-    border-bottom: 1px solid var(--border-color);
-    white-space: nowrap;
-}
+    // Event Listeners (Olay Dinleyicileri)
+    addCourseBtn.addEventListener('click', addCourseRow);
+    calculateGpaBtn.addEventListener('click', calculateAndDisplayResults);
 
-.courses-table th {
-    font-size: 12px; color: var(--light-text);
-    text-transform: uppercase; font-weight: 600;
-}
+    coursesTbody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-row-btn')) {
+            e.target.closest('tr').remove();
+        }
+    });
 
-.courses-table td { vertical-align: middle; }
-
-.courses-table input { min-width: 70px; text-align: center; }
-
-.result-cell { font-weight: 600; }
-
-.status-passed { color: var(--passed-text); background-color: var(--passed-bg); }
-.status-failed { color: var(--failed-text); background-color: var(--failed-bg); }
-
-.delete-row-btn {
-    background-color: var(--failed-bg); color: var(--danger-color); border: none;
-    width: 30px; height: 30px; border-radius: 50%;
-    cursor: pointer; font-weight: bold; transition: background-color 0.2s;
-}
-.delete-row-btn:hover{ background-color: #f1c1c5; }
-
-button {
-    width: 100%; padding: 14px; border: none; border-radius: 8px;
-    font-size: 16px; font-weight: 700; cursor: pointer;
-    transition: background-color 0.2s; margin-top: 10px;
-}
-
-.primary-btn { background-color: var(--primary-color); color: white; }
-.primary-btn:hover { background-color: #0056b3; }
-
-.secondary-btn {
-    background-color: #e9ecef; color: var(--secondary-color);
-    border: none;
-}
-.secondary-btn:hover { background-color: #dee2e6; }
-
-.result-area {
-    margin-top: 24px; padding: 20px; border-radius: 8px;
-    text-align: center; font-size: 20px; font-weight: 700;
-    display: none; /* JS ile gösterilecek */
-}
+    // Sayfa ilk yüklendiğinde başlangıç için 5 ders satırı ekle
+    for (let i = 0; i < 7; i++) {
+        addCourseRow();
+    }
+});
