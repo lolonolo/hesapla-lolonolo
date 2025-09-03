@@ -1,98 +1,114 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Gerekli HTML elementlerini seçiyoruz
-    const universitySelect = document.getElementById('university-select');
-    const coursesTbody = document.getElementById('courses-tbody');
-    const addCourseBtn = document.getElementById('add-course-btn');
-    const calculateGpaBtn = document.getElementById('calculate-gpa-btn');
-    const gpaResultArea = document.getElementById('gpa-result-area');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-    // Üniversitelere göre harf notu ve 4'lük sistem karşılıkları
-    const gradeValues = {
-        standart: { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FD': 0.5, 'FF': 0.0 },
-        auf: { 'AA': 4.0, 'AB': 3.7, 'BA': 3.3, 'BB': 3.0, 'BC': 2.7, 'CB': 2.3, 'CC': 2.0, 'CD': 1.7, 'DC': 1.3, 'DD': 1.0, 'FF': 0.0 },
-        auzef: { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FD': 0.5, 'FF': 0.0 },
-        ata_auf: { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0 }
-    };
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --card-bg: #ffffff;
+    --body-bg: #f4f7f9;
+    --text-color: #333;
+    --light-text: #6c757d;
+    --border-color: #dee2e6;
+    --passed-bg: #e7f5ec;
+    --passed-text: #0f5132;
+    --failed-bg: #fbebee;
+    --failed-text: #b02a37;
+    --danger-color: #dc3545;
+}
 
-    // Harf notu seçeneklerini oluşturan fonksiyon
-    const createGradeOptions = () => {
-        // Şu anki sistemde tüm harf notları aynı olduğu için standart sistemi kullanabiliriz.
-        // İleride farklılaşırsa diye bu yapı korundu.
-        const options = gradeValues.standart;
-        let html = '<option value="">Seçin</option>';
-        for (const grade in options) {
-            html += `<option value="${grade}">${grade}</option>`;
-        }
-        return html;
-    };
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-    // Yeni bir ders satırı ekleyen fonksiyon
-    const addCourseRow = () => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><input type="number" class="credit-input" min="1" placeholder="Örn: 3"></td>
-            <td><select class="grade-select">${createGradeOptions()}</select></td>
-            <td><button class="delete-row-btn">X</button></td>
-        `;
-        coursesTbody.appendChild(row);
-    };
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    padding: 10px;
+}
 
-    // Ders satırını silen fonksiyon
-    const deleteCourseRow = (button) => {
-        button.closest('tr').remove();
-    };
+.calculator-container {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+}
 
-    // GANO'yu hesaplayan ana fonksiyon
-    const calculateGpa = () => {
-        const selectedSystem = universitySelect.value;
-        const currentGradeValues = gradeValues[selectedSystem];
-        const rows = coursesTbody.querySelectorAll('tr');
-        
-        let totalCredits = 0;
-        let totalWeightedPoints = 0;
+.tabs { display: flex; background-color: #f8f9fa; }
 
-        rows.forEach(row => {
-            const creditInput = row.querySelector('.credit-input');
-            const gradeSelect = row.querySelector('.grade-select');
+.tab-btn {
+    flex-grow: 1; padding: 15px 10px; font-size: 14px;
+    font-weight: 600; cursor: pointer; border: none;
+    background-color: transparent; color: var(--secondary-color);
+    border-bottom: 3px solid transparent; transition: all 0.2s;
+}
 
-            const credit = parseFloat(creditInput.value);
-            const grade = gradeSelect.value;
+.tab-btn.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-            if (!isNaN(credit) && credit > 0 && grade && currentGradeValues[grade] !== undefined) {
-                totalCredits += credit;
-                totalWeightedPoints += credit * currentGradeValues[grade];
-            }
-        });
+.calculator-content { padding: 24px; }
 
-        if (totalCredits === 0) {
-            gpaResultArea.innerHTML = 'Lütfen geçerli kredi ve not bilgisi girin.';
-            gpaResultArea.style.display = 'block';
-            return;
-        }
+.input-section { margin-bottom: 24px; }
 
-        const gpa = totalWeightedPoints / totalCredits;
-        displayResult(gpa);
-    };
+.input-section label {
+    display: block; font-weight: 600;
+    margin-bottom: 8px; font-size: 14px;
+}
 
-    // Sonucu ekranda gösteren fonksiyon
-    const displayResult = (gpa) => {
-        gpaResultArea.innerHTML = `<strong>Dönem Ortalamanız (GANO):</strong> ${gpa.toFixed(2)}`;
-        gpaResultArea.style.display = 'block';
-    };
+select, input {
+    width: 100%; padding: 10px; border: 1px solid var(--border-color);
+    border-radius: 8px; font-size: 14px; font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+}
 
-    // Butonlara tıklandığında ilgili fonksiyonları çalıştır
-    addCourseBtn.addEventListener('click', addCourseRow);
-    calculateGpaBtn.addEventListener('click', calculateGpa);
+.table-wrapper { overflow-x: auto; }
 
-    // Silme butonu için event delegation
-    coursesTbody.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-row-btn')) {
-            deleteCourseRow(e.target);
-        }
-    });
+.courses-table {
+    width: 100%; border-collapse: collapse; margin-bottom: 20px;
+}
 
-    // Sayfa ilk yüklendiğinde başlangıç için 5 ders satırı ekle
-    for (let i = 0; i < 5; i++) {
-        addCourseRow();
-    }
-});
+.courses-table th, .courses-table td {
+    text-align: center; padding: 12px 8px;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.courses-table th {
+    font-size: 12px; color: var(--light-text);
+    text-transform: uppercase; font-weight: 600;
+}
+
+.courses-table td { vertical-align: middle; }
+
+.courses-table input { min-width: 70px; text-align: center; }
+
+.result-cell { font-weight: 600; }
+
+.status-passed { color: var(--passed-text); background-color: var(--passed-bg); }
+.status-failed { color: var(--failed-text); background-color: var(--failed-bg); }
+
+.delete-row-btn {
+    background-color: var(--failed-bg); color: var(--danger-color); border: none;
+    width: 30px; height: 30px; border-radius: 50%;
+    cursor: pointer; font-weight: bold; transition: background-color 0.2s;
+}
+.delete-row-btn:hover{ background-color: #f1c1c5; }
+
+button {
+    width: 100%; padding: 14px; border: none; border-radius: 8px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: background-color 0.2s; margin-top: 10px;
+}
+
+.primary-btn { background-color: var(--primary-color); color: white; }
+.primary-btn:hover { background-color: #0056b3; }
+
+.secondary-btn {
+    background-color: #e9ecef; color: var(--secondary-color);
+    border: none;
+}
+.secondary-btn:hover { background-color: #dee2e6; }
+
+.result-area {
+    margin-top: 24px; padding: 20px; border-radius: 8px;
+    text-align: center; font-size: 20px; font-weight: 700;
+    display: none; /* JS ile gösterilecek */
+}
