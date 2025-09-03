@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUZEF Not Hesaplama Aracı - Lolonolo</title>
+    <title>GANO Hesaplama Aracı - Lolonolo</title>
     
     <link rel="icon" type="image/png" href="https://lolonolo.com/wp-content/uploads/2025/04/lolonolo-favicon.png">
     <link rel="apple-touch-icon" href="https://lolonolo.com/wp-content/uploads/2025/04/lolonolo-favicon.png">
@@ -27,55 +27,45 @@
       window.ezstandalone = window.ezstandalone || {};
       ezstandalone.cmd = ezstandalone.cmd || [];
     </script>
-    <script>
-        function signalGooglefcPresent() {
-            if (!window.frames['googlefcPresent']) {
-                if (document.body) {
-                    const iframe = document.createElement('iframe');
-                    iframe.name = 'googlefcPresent';
-                    iframe.style.display = 'none';
-                    document.body.appendChild(iframe);
-                } else {
-                    setTimeout(signalGooglefcPresent, 0);
-                }
-            }
-        }
-        signalGooglefcPresent();
-    </script>
 </head>
 <body>
 
-    <div class="card">
-        <div class="card-header">
-            <h1>AUZEF Not Hesaplama Aracı</h1>
-            <p>Vize ve Final notlarınızı girerek başarı notunuzu anında öğrenin.</p>
+    <div class="calculator-container">
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="gano">GANO HESAPLAYICI</button>
+            <button class="tab-btn" data-tab="pass">Ders Geçme Hesaplayıcı</button>
+        </nav>
+
+        <div class="calculator-content">
+            <div class="input-section">
+                <label for="university-select">Üniversite Sistemi Seçin</label>
+                <select id="university-select">
+                    <option value="standart">Genel / Standart Sistem</option>
+                    <option value="auf">Anadolu Üniversitesi (AÖF)</option>
+                    <option value="auzef">İstanbul Üniversitesi (AUZEF)</option>
+                    <option value="ata_auf">Atatürk Üniversitesi (ATA-AÖF)</option>
+                </select>
+            </div>
+
+            <table class="courses-table">
+                <thead>
+                    <tr>
+                        <th>Ders Kredisi</th>
+                        <th>Harf Notu</th>
+                        <th>Kaldır</th>
+                    </tr>
+                </thead>
+                <tbody id="courses-tbody">
+                    </tbody>
+            </table>
+            
+            <button id="add-course-btn" class="secondary-btn">+ Yeni Ders Ekle</button>
+            
+            <button id="calculate-gpa-btn" class="primary-btn">ORTALAMAYI HESAPLA</button>
+
+            <div id="gpa-result-area" class="result-area">
+                </div>
         </div>
-
-        <div class="card-body">
-            <div class="options">
-                <label>
-                    <input type="radio" name="program" value="uzaktan" checked> Uzaktan Öğretim (%30-%70)
-                </label>
-                <label>
-                    <input type="radio" name="program" value="acikogretim"> Açıköğretim (%40-%60)
-                </label>
-            </div>
-
-            <div class="input-group">
-                <label for="vize">Vize Notu</label>
-                <input type="number" id="vize" placeholder="Örn: 65">
-            </div>
-
-            <div class="input-group">
-                <label for="final">Final / Bütünleme Notu</label>
-                <input type="number" id="final" placeholder="Örn: 80">
-            </div>
-
-            <button id="calculate-btn">HESAPLA</button>
-        </div>
-
-        <div class="card-footer" id="result-area">
-            </div>
     </div>
     
     <script src="script.js"></script>
