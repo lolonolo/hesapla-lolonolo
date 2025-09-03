@@ -1,166 +1,133 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- SEKME DEĞİŞTİRME MANTIĞI ---
-    const tabs = document.querySelectorAll('.tab-btn');
-    const contents = document.querySelectorAll('.calculator-content');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(item => item.classList.remove('active'));
-            tab.classList.add('active');
-
-            const targetId = tab.dataset.tab;
-            const targetContent = document.getElementById(targetId);
-
-            contents.forEach(content => {
-                content.style.display = 'none';
-            });
-
-            if (targetContent) {
-                targetContent.style.display = 'block';
-            }
-        });
-    });
-
-    // --- GANO HESAPLAYICI KODLARI ---
-    const ganoSystemSelect = document.getElementById('system-select');
-    const coursesTbody = document.getElementById('courses-tbody');
-    const addCourseBtn = document.getElementById('add-course-btn');
-    const calculateGpaBtn = document.getElementById('calculate-gpa-btn');
-    const gpaResultArea = document.getElementById('gpa-result-area');
-
-    const gradePointValues = { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0 };
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GANO (AGNO) & Ders Geçme Hesaplama - Lolonolo</title>
     
-    // GÜNCELLENMİŞ SİSTEMLER
-    const universitySystems = {
-        'auzef_acik':    { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
-        'auzef_uzaktan': { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
-        'anadolu_aof':   { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
-        'ata_aof':       { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } }
-    };
+    <link rel="icon" type="image/png" href="https://lolonolo.com/wp-content/uploads/2025/04/lolonolo-favicon.png">
+    <link rel="apple-touch-icon" href="https://lolonolo.com/wp-content/uploads/2025/04/lolonolo-favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 
-    const getLetterGrade = (score) => {
-        if (score >= 88) return 'AA'; if (score >= 81) return 'BA';
-        if (score >= 74) return 'BB'; if (score >= 67) return 'CB';
-        if (score >= 60) return 'CC'; if (score >= 53) return 'DC';
-        if (score >= 46) return 'DD'; return 'FF';
-    };
 
-    const getPassStatus = (finalGrade, successGrade, letterGrade, rules) => {
-        if (finalGrade < rules.minFinal || successGrade < rules.minAverage) {
-            return { text: 'Kaldı', className: 'status-failed' };
-        }
-        if (letterGrade === 'DC' || letterGrade === 'DD') {
-            return { text: 'Şartlı Geçti', className: 'status-conditional' };
-        }
-        return { text: 'Geçti', className: 'status-passed' };
-    };
-
-    const addCourseRow = () => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><input type="number" class="credit-input" placeholder="AKTS" min="1"></td>
-            <td><input type="number" class="vize-input" placeholder="Vize Notu" min="0" max="100"></td>
-            <td><input type="number" class="final-input" placeholder="Final Notu" min="0" max="100"></td>
-            <td class="result-cell success-grade">-</td>
-            <td class="result-cell letter-grade">-</td>
-            <td class="result-cell status">-</td>
-            <td><button class="delete-row-btn">X</button></td>
-        `;
-        coursesTbody.appendChild(row);
-    };
-
-    const calculateAndDisplayGpaResults = () => {
-        const selectedSystemKey = ganoSystemSelect.value;
-        const selectedSystem = universitySystems[selectedSystemKey];
-        const rows = coursesTbody.querySelectorAll('tr');
-        let totalCredits = 0, totalWeightedPoints = 0;
-
-        rows.forEach(row => {
-            const credit = parseFloat(row.querySelector('.credit-input').value);
-            const vize = parseFloat(row.querySelector('.vize-input').value);
-            const final = parseFloat(row.querySelector('.final-input').value);
-            const successGradeCell = row.querySelector('.success-grade');
-            const letterGradeCell = row.querySelector('.letter-grade');
-            const statusCell = row.querySelector('.status');
-            
-            statusCell.className = 'result-cell status';
-
-            if (!isNaN(credit) && credit > 0 && !isNaN(vize) && !isNaN(final)) {
-                const successGrade = (vize * selectedSystem.weights.vize) + (final * selectedSystem.weights.final);
-                const letterGrade = getLetterGrade(successGrade);
-                const status = getPassStatus(final, successGrade, letterGrade, selectedSystem.rules);
-                successGradeCell.textContent = successGrade.toFixed(2);
-                letterGradeCell.textContent = letterGrade;
-                statusCell.textContent = status.text;
-                statusCell.classList.add(status.className);
-
-                const gradePoint = gradePointValues[letterGrade];
-                if (gradePoint !== undefined) {
-                    totalCredits += credit;
-                    totalWeightedPoints += credit * gradePoint;
+     <script>
+        window.ezstandalone = window.ezstandalone || {};
+        ezstandalone.cmd = ezstandalone.cmd || [];
+    </script>
+   
+    <script>
+        function signalGooglefcPresent() {
+            if (!window.frames['googlefcPresent']) {
+                if (document.body) {
+                    const iframe = document.createElement('iframe');
+                    iframe.name = 'googlefcPresent';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                } else {
+                    setTimeout(signalGooglefcPresent, 0);
                 }
-            } else {
-                successGradeCell.textContent = '-'; letterGradeCell.textContent = '-'; statusCell.textContent = '-';
             }
-        });
-
-        if (totalCredits === 0) {
-            gpaResultArea.innerHTML = 'Lütfen en az bir ders için geçerli bilgiler girin.';
-            gpaResultArea.style.display = 'block';
-            gpaResultArea.className = 'result-area status-failed';
-        } else {
-            const gpa = totalWeightedPoints / totalCredits;
-            gpaResultArea.innerHTML = `<strong>Dönem Ortalamanız (GANO / AGNO):</strong> ${gpa.toFixed(2)}`;
-            gpaResultArea.style.display = 'block';
-            gpaResultArea.className = 'result-area status-passed';
         }
-    };
+        signalGooglefcPresent();
+    </script>
+    </head>
+<body>
 
-    addCourseBtn.addEventListener('click', addCourseRow);
-    calculateGpaBtn.addEventListener('click', calculateAndDisplayGpaResults);
-    coursesTbody.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-row-btn')) {
-            e.target.closest('tr').remove();
-        }
-    });
+    <div class="calculator-container">
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="gano-content">GANO (AGNO) HESAPLAYICI</button>
+            <button class="tab-btn" data-tab="pass-content">DERS GEÇME HESAPLAYICI</button>
+        </nav>
 
-    // --- DERS GEÇME HESAPLAYICI KODLARI ---
-    const passVizeInput = document.getElementById('pass-vize-input');
-    const targetGradeSelect = document.getElementById('target-grade-select');
-    const calculatePassBtn = document.getElementById('calculate-pass-btn');
-    const passResultArea = document.getElementById('pass-result-area');
+        <div id="gano-content" class="calculator-content active-content">
+            <div class="input-section">
+                <label for="system-select">Okul / Sistem Seçin</label>
+                <select id="system-select">
+                   <option value="auzef_acik">AUZEF - Açıköğretim (%30 Vize - %70 Final)</option>
+                    <option value="auzef_uzaktan">AUZEF - Uzaktan Öğretim (%30 Vize - %70 Final)</option>
+                    <option value="anadolu_aof">Anadolu AÖF (%30 Vize - %70 Final)</option>
+                    <option value="ata_aof">ATA AÖF (%30 Vize - %70 Final)</option>
+                </select>
+            </div>
+            <div class="table-wrapper">
+                <table class="courses-table">
+                    <thead>
+                        <tr>
+                            <th>Kredi (AKTS)</th>
+                            <th>Vize Notu</th>
+                            <th>Final/Büt Notu</th>
+                            <th>Başarı Notu</th>
+                            <th>Harf Notu</th>
+                            <th>Durum</th>
+                            <th>Sil</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses-tbody"></tbody>
+                </table>
+            </div>
+            <button id="add-course-btn" class="secondary-btn">+ Yeni Ders Ekle</button>
+            <button id="calculate-gpa-btn" class="primary-btn">ORTALAMAYI HESAPLA</button>
+            <div id="gpa-result-area" class="result-area"></div>
+        </div>
 
-    const calculateRequiredFinal = () => {
-        const selectedSystemKey = ganoSystemSelect.value;
-        const system = universitySystems[selectedSystemKey];
-        const vize = parseFloat(passVizeInput.value);
-        const targetScore = parseFloat(targetGradeSelect.value);
+        <div id="pass-content" class="calculator-content" style="display: none;">
+            <p class="content-description">Vize notunuzu ve dersten almayı hedeflediğiniz harf notunu seçerek Final veya Bütünleme'den en az kaç almanız gerektiğini hesaplayın.</p>
+            <div class="input-section">
+                <label for="pass-vize-input">Vize Notu</label>
+                <input type="number" id="pass-vize-input" placeholder="Vize notunuzu girin">
+            </div>
+            <div class="input-section">
+                <label for="target-grade-select">Hedeflenen Harf Notu</label>
+                <select id="target-grade-select">
+                    <option value="35">Sadece Geçmek (DD - En Düşük)</option>
+                    <option value="53">DC - Şartlı Geçmek</option>
+                    <option value="60">CC - Orta</option>
+                    <option value="67">CB</option>
+                    <option value="74">BB - İyi</option>
+                    <option value="81">BA</option>
+                    <option value="88">AA - Mükemmel</option>
+                </select>
+            </div>
+            <button id="calculate-pass-btn" class="primary-btn">GEREKEN NOTU HESAPLA</button>
+            <div id="pass-result-area" class="result-area"></div>
+        </div>
 
-        if (isNaN(vize) || vize < 0 || vize > 100) {
-            passResultArea.innerHTML = 'Lütfen 0-100 arasında geçerli bir Vize notu girin.';
-            passResultArea.className = 'result-area status-failed';
-            passResultArea.style.display = 'block';
-            return;
-        }
-
-        let requiredFinal = (targetScore - (vize * system.weights.vize)) / system.weights.final;
-        const finalMinScore = system.rules.minFinal;
-        let finalResult = Math.max(requiredFinal, finalMinScore);
-        
-        if (finalResult > 100) {
-            passResultArea.innerHTML = `Bu vize notuyla hedefinize ulaşmak için Final'den <strong>100'den yüksek</strong> almanız gerekiyor. Maalesef mümkün değil.`;
-            passResultArea.className = 'result-area status-failed';
-        } else {
-            passResultArea.innerHTML = `Hedefinize ulaşmak için Final'den almanız gereken minimum not: <strong>${Math.ceil(finalResult)}</strong>`;
-            passResultArea.className = 'result-area status-passed';
-        }
-        passResultArea.style.display = 'block';
-    };
-
-    calculatePassBtn.addEventListener('click', calculateRequiredFinal);
+    </div>
     
-    // Sayfa ilk yüklendiğinde GANO için 5 ders satırı ekle
-    for (let i = 0; i < 5; i++) {
-        addCourseRow();
-    }
-});
+    <script src="script.js"></script>
+     <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof ezstandalone !== 'undefined') {
+            ezstandalone.cmd.push(function() {
+                ezstandalone.enable();
+                ezstandalone.display();
+            });
+        }
+
+        setTimeout(function() {
+            var fcScript = document.createElement('script');
+            fcScript.src = "https://fundingchoicesmessages.google.com/i/pub-6517205438926212?ers=1";
+            fcScript.async = true;
+            document.head.appendChild(fcScript);
+
+            function signalGooglefcPresent() {
+                if (!window.frames['googlefcPresent']) {
+                    if (document.body) {
+                        const iframe = document.createElement('iframe');
+                        iframe.name = 'googlefcPresent';
+                        iframe.style.display = 'none';
+                        document.body.appendChild(iframe);
+                    } else {
+                        setTimeout(signalGooglefcPresent, 0);
+                    }
+                }
+            }
+            signalGooglefcPresent();
+        }, 5000);
+    });
+    </script>
+    </body>
+</html>
