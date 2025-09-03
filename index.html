@@ -26,8 +26,8 @@
     <script>
       window.ezstandalone = window.ezstandalone || {};
       ezstandalone.cmd = ezstandalone.cmd || [];
-    </script>   
-    <script>
+    </script>
+        <script>
         function signalGooglefcPresent() {
             if (!window.frames['googlefcPresent']) {
                 if (document.body) {
@@ -53,10 +53,12 @@
 
         <div class="calculator-content">
             <div class="input-section">
-                <label for="system-select">Sistem Seçin</label>
+                <label for="system-select">Okul / Sistem Seçin</label>
                 <select id="system-select">
-                    <option value="acikogretim">Açıköğretim (%40 Vize - %60 Final)</option>
-                    <option value="uzaktan">Uzaktan Öğretim (%30 Vize - %70 Final)</option>
+                    <option value="auzef_acik">AUZEF - Açıköğretim (%40 Vize - %60 Final)</option>
+                    <option value="auzef_uzaktan">AUZEF - Uzaktan Öğretim (%30 Vize - %70 Final)</option>
+                    <option value="anadolu_aof">Anadolu AÖF (%30 Vize - %70 Final)</option>
+                    <option value="ata_aof">ATA AÖF (%30 Vize - %70 Final)</option>
                 </select>
             </div>
 
@@ -87,7 +89,7 @@
     </div>
     
     <script src="script.js"></script>
-    <script>
+       <script>
     document.addEventListener("DOMContentLoaded", function() {
         if (typeof ezstandalone !== 'undefined') {
             ezstandalone.cmd.push(function() {
