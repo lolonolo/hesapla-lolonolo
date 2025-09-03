@@ -7,14 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.addEventListener('click', () => {
             tabs.forEach(item => item.classList.remove('active'));
             tab.classList.add('active');
-
             const targetId = tab.dataset.tab;
             const targetContent = document.getElementById(targetId);
-
             contents.forEach(content => {
                 content.style.display = 'none';
             });
-
             if (targetContent) {
                 targetContent.style.display = 'block';
             }
@@ -30,12 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gradePointValues = { 'AA': 4.0, 'BA': 3.5, 'BB': 3.0, 'CB': 2.5, 'CC': 2.0, 'DC': 1.5, 'DD': 1.0, 'FF': 0.0 };
     
-    // GÜNCELLENMİŞ SİSTEMLER (Uzaktan %40/60 yapıldı)
     const universitySystems = {
-        'auzef_acik':    { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
-        'auzef_uzaktan': { weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 50, minAverage: 35 } },
-        'anadolu_aof':   { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } },
-        'ata_aof':       { weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 50, minAverage: 35 } }
+        'auzef_acik':    { name: "AUZEF Açıköğretim", weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 40, minAverage: 35 } },
+        'auzef_uzaktan': { name: "AUZEF Uzaktan Öğretim", weights: { vize: 0.4, final: 0.6 }, rules: { minFinal: 50, minAverage: 35 } },
+        'anadolu_aof':   { name: "Anadolu AÖF", weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 35 } },
+        'ata_aof':       { name: "ATA AÖF", weights: { vize: 0.3, final: 0.7 }, rules: { minFinal: 0, minAverage: 35 } }
     };
 
     const getLetterGrade = (score) => {
@@ -46,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const getPassStatus = (finalGrade, successGrade, letterGrade, rules) => {
-        if (finalGrade < rules.minFinal || successGrade < rules.minAverage) {
+        if ((rules.minFinal > 0 && finalGrade < rules.minFinal) || successGrade < rules.minAverage) {
             return { text: 'Kaldı', className: 'status-failed' };
         }
         if (letterGrade === 'DC' || letterGrade === 'DD') {
@@ -76,23 +72,35 @@ document.addEventListener('DOMContentLoaded', () => {
         let totalCredits = 0, totalWeightedPoints = 0;
 
         rows.forEach(row => {
-            const credit = parseFloat(row.querySelector('.credit-input').value);
-            const vize = parseFloat(row.querySelector('.vize-input').value);
-            const final = parseFloat(row.querySelector('.final-input').value);
+            const creditInput = row.querySelector('.credit-input');
+            const vizeInput = row.querySelector('.vize-input');
+            const finalInput = row.querySelector('.final-input');
             const successGradeCell = row.querySelector('.success-grade');
             const letterGradeCell = row.querySelector('.letter-grade');
             const statusCell = row.querySelector('.status');
             
+            // Her hesaplamada önceki hata stilini temizle
+            finalInput.classList.remove('input-error');
             statusCell.className = 'result-cell status';
+
+            const credit = parseFloat(creditInput.value);
+            const vize = parseFloat(vizeInput.value);
+            const final = parseFloat(finalInput.value);
 
             if (!isNaN(credit) && credit > 0 && !isNaN(vize) && !isNaN(final)) {
                 const successGrade = (vize * selectedSystem.weights.vize) + (final * selectedSystem.weights.final);
                 const letterGrade = getLetterGrade(successGrade);
                 const status = getPassStatus(final, successGrade, letterGrade, selectedSystem.rules);
+                
                 successGradeCell.textContent = successGrade.toFixed(2);
                 letterGradeCell.textContent = letterGrade;
                 statusCell.textContent = status.text;
                 statusCell.classList.add(status.className);
+
+                // YENİ EKLENEN MANTIK: Eğer final barajı yüzünden kaldıysa, final kutusunu kırmızı yap
+                if (status.text === 'Kaldı' && (selectedSystem.rules.minFinal > 0 && final < selectedSystem.rules.minFinal)) {
+                    finalInput.classList.add('input-error');
+                }
 
                 const gradePoint = gradePointValues[letterGrade];
                 if (gradePoint !== undefined) {
@@ -145,11 +153,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let requiredFinal = (targetScore - (vize * system.weights.vize)) / system.weights.final;
         const finalMinScore = system.rules.minFinal;
-        let finalResult = Math.max(requiredFinal, finalMinScore);
+        let finalResult = (finalMinScore > 0) ? Math.max(requiredFinal, finalMinScore) : requiredFinal;
         
         if (finalResult > 100) {
             passResultArea.innerHTML = `Bu vize notuyla hedefinize ulaşmak için Final'den <strong>100'den yüksek</strong> almanız gerekiyor. Maalesef mümkün değil.`;
             passResultArea.className = 'result-area status-failed';
+        } else if (finalResult < 0) {
+             passResultArea.innerHTML = `Bu vize notuyla hedefinize zaten ulaştınız. Finalden <strong>${finalMinScore > 0 ? finalMinScore : 0}</strong> almanız yeterlidir.`;
+            passResultArea.className = 'result-area status-passed';
         } else {
             passResultArea.innerHTML = `Hedefinize ulaşmak için Final'den almanız gereken minimum not: <strong>${Math.ceil(finalResult)}</strong>`;
             passResultArea.className = 'result-area status-passed';
