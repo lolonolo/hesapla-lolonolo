@@ -26,6 +26,21 @@
     <script>
       window.ezstandalone = window.ezstandalone || {};
       ezstandalone.cmd = ezstandalone.cmd || [];
+    </script>   
+    <script>
+        function signalGooglefcPresent() {
+            if (!window.frames['googlefcPresent']) {
+                if (document.body) {
+                    const iframe = document.createElement('iframe');
+                    iframe.name = 'googlefcPresent';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                } else {
+                    setTimeout(signalGooglefcPresent, 0);
+                }
+            }
+        }
+        signalGooglefcPresent();
     </script>
 </head>
 <body>
@@ -72,7 +87,7 @@
     </div>
     
     <script src="script.js"></script>
-     <script>
+    <script>
     document.addEventListener("DOMContentLoaded", function() {
         if (typeof ezstandalone !== 'undefined') {
             ezstandalone.cmd.push(function() {
