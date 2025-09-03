@@ -112,3 +112,13 @@ button {
     text-align: center; font-size: 20px; font-weight: 700;
     display: none; /* JS ile gösterilecek */
 }
+/* YENİ EKLENEN STİLLER */
+:root {
+    --conditional-bg: #fff8e1;
+    --conditional-text: #8d6e0a;
+}
+
+.status-conditional {
+    color: var(--conditional-text);
+    background-color: var(--conditional-bg);
+}
