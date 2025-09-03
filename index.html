@@ -12,6 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
+    <script src="https://the.gatekeeperconsent.com/cmp.min.js" async></script>
+    <script src="https://the.gatekeeperconsent.com/ccpa/v2/standalone.js" async></script>
+    <script src="//www.ezojs.com/ezoic/sa.min.js" async></script>
+    <script async src="https://fundingchoicesmessages.google.com/i/pub-6517205438926212?ers=1"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E3VBQV8L46"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -19,7 +23,26 @@
       gtag('js', new Date());
       gtag('config', 'G-E3VBQV8L46');
     </script>
-    </head>
+    <script>
+      window.ezstandalone = window.ezstandalone || {};
+      ezstandalone.cmd = ezstandalone.cmd || [];
+    </script>
+    <script>
+        function signalGooglefcPresent() {
+            if (!window.frames['googlefcPresent']) {
+                if (document.body) {
+                    const iframe = document.createElement('iframe');
+                    iframe.name = 'googlefcPresent';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                } else {
+                    setTimeout(signalGooglefcPresent, 0);
+                }
+            }
+        }
+        signalGooglefcPresent();
+    </script>
+</head>
 <body>
 
     <header class="page-header">
@@ -29,6 +52,17 @@
     </header>
 
     <div class="main-layout">
+        <aside class="sidebar-nav" id="side-menu">
+            <h3>Lolonolo Kaynakları</h3>
+            <ul>
+                <li><a href="https://lolonolo.com" target="_blank">Tüm Çıkmış Sınav Soruları</a></li>
+                <li><a href="https://www.shopier.com/lolonolo" target="_blank">Premium Üyelik</a></li>
+                <li><a href="https://openvideo.lolonolo.com/" target="_blank">Youtube Soru Videoları</a></li>
+                <li><a href="https://www.instagram.com/lolonolo_com" target="_blank">Destek (Instagram)</a></li>
+                <li><a href="mailto:lolonolo@lolonolo.com">İletişim (E-posta)</a></li>
+            </ul>
+        </aside>
+
         <main class="calculator-wrapper">
             <div class="calculator-card">
                 <nav class="tabs">
@@ -92,23 +126,21 @@
                 </div>
             </div>
         </main>
-
-        <aside class="sidebar-nav" id="side-menu">
-            <h3>Lolonolo Kaynakları</h3>
-            <ul>
-                <li><a href="https://lolonolo.com" target="_blank">Tüm Çıkmış Sınav Soruları</a></li>
-                <li><a href="https://www.shopier.com/lolonolo" target="_blank">Premium Üyelik</a></li>
-                <li><a href="https://openvideo.lolonolo.com/" target="_blank">Youtube Soru Videoları</a></li>
-                <li><a href="https://www.instagram.com/lolonolo_com" target="_blank">Destek (Instagram)</a></li>
-                <li><a href="mailto:lolonolo@lolonolo.com">İletişim (E-posta)</a></li>
-            </ul>
-        </aside>
     </div>
-
-    <footer class="ad-footer">
-        <div id="bottom-ad-placeholder"></div>
-    </footer>
     
     <script src="script.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (typeof ezstandalone !== 'undefined') {
+            ezstandalone.cmd.push(function() {
+                ezstandalone.enable();
+                ezstandalone.display();
+            });
+        }
+    });
+    </script>
+    <div><script data-ezscrex="false" data-cfasync="false">(window.humixPlayers = window.humixPlayers || []).push({target: document.currentScript});</script>
+        <script async data-ezscrex="false" data-cfasync="false" src="https://www.humix.com/video.js"></script>
+    </div>
 </body>
 </html>
