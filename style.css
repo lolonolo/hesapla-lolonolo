@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --primary-color: #007bff;
+    --card-bg: #ffffff;
+    --body-bg: #f4f7f9;
+    --text-color: #333;
+    --light-text: #666;
+    --border-color: #e0e0e0;
+    --success-bg: #e7f5ec;
+    --success-border: #b8dfc9;
+    --success-text: #0f5132;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    width: 100%;
+    max-width: 450px;
+}
+
+.card-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h1 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.card-header p {
+    font-size: 15px;
+    color: var(--light-text);
+}
+
+.card-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.options {
+    display: flex;
+    gap: 16px;
+    font-size: 14px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.input-group input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.card-footer {
+    padding: 20px 24px;
+    background-color: var(--success-bg);
+    border-top: 1px solid var(--success-border);
+    display: none; /* JavaScript ile gösterilecek */
+    text-align: center;
+    color: var(--success-text);
+}
