@@ -95,6 +95,32 @@ button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size
     transition: all 0.3s;
 }
 
+                    .premium-link-cta {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px !important;
+    border-radius: 12px;
+    text-decoration: none;
+    color: white !important;
+    font-weight: 600;
+    background: linear-gradient(45deg, #6D28D9, #4F46E5);
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.premium-link-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+    padding-left: 15px !important;
+    background: linear-gradient(45deg, #6D28D9, #4F46E5);
+}
+.premium-link-cta i {
+    color: #FBBF24 !important;
+}
+
+
 @media (max-width: 900px) {
     .page-header { display: block; height: 60px; }
     .main-layout { flex-direction: column; margin-top: 0; padding: 0 10px; }
